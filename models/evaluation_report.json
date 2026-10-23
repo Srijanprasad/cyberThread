@@ -1,0 +1,77 @@
+{
+  "timestamp": 1700000000.0,
+  "sample_counts": {
+    "train": 630,
+    "test": 210
+  },
+  "overall_metrics": {
+    "weighted_precision": 1.0,
+    "weighted_recall": 1.0,
+    "weighted_f1_score": 1.0,
+    "benign_false_positive_rate": 0.0
+  },
+  "per_class_metrics": {
+    "benign": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    },
+    "c2_beaconing": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    },
+    "dns_tunneling": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    },
+    "port_scan": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    },
+    "slowloris": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    },
+    "syn_flood": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    },
+    "udp_flood": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 30.0
+    }
+  },
+  "feature_importances": {
+    "packets_per_sec": 0.04921215888147566,
+    "bytes_per_sec": 0.1221635488689683,
+    "mean_packet_size": 0.06966588698499986,
+    "std_packet_size": 0.05755936324829845,
+    "iat_mean": 0.050410817419423486,
+    "iat_std": 0.018494366438467462,
+    "syn_ratio": 0.09878882874863779,
+    "ack_ratio": 0.027963106895557414,
+    "fin_ratio": 0.0,
+    "dns_query_count": 0.010531023527436649,
+    "dns_entropy_max": 0.06900617343936191,
+    "dns_label_len_max": 0.07247434595357348,
+    "dns_unique_subdomains": 0.0027428528203088626,
+    "http_incomplete_flag": 0.026333271731658368,
+    "flow_duration": 0.03856320368941476,
+    "unique_dst_ports_short": 0.1659960412474363,
+    "unique_dst_ips_short": 0.0753747539897202,
+    "periodicity_score": 0.044720256115261134
+  }
+}

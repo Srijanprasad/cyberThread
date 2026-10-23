@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  cyberthread:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cyberthread_enclave
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=.
+      - DIODE_ENCLAVE_MODE=UNIDIRECTIONAL_PASSIVE_INGEST
+    volumes:
+      - ./data/raw_pcaps:/app/data/raw_pcaps
+      - ./models:/app/models
+    restart: unless-stopped

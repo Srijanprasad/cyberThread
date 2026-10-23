@@ -1,0 +1,20 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Node & Frontend
+node_modules/
+dashboard/node_modules/
+.DS_Store
+
+# Data files (PCAPs can be large)
+data/raw_pcaps/*.pcap
+!data/raw_pcaps/.gitkeep
