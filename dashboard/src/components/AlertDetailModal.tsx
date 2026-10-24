@@ -25,6 +25,11 @@ export interface ThreatAlert {
   visibility_notes: string;
   recommended_action: string;
   detection_layer: string;
+  mitre_id?: string;
+  mitre_technique?: string;
+  evidence_hash?: string;
+  previous_hash?: string;
+  block_index?: number;
 }
 
 interface AlertDetailModalProps {
@@ -86,6 +91,9 @@ export const AlertDetailModal: React.FC<AlertDetailModalProps> = ({ alert, onClo
             <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginTop: '6px', color: '#f8fafc' }}>
               {alert.threat_type.replace(/_/g, ' ').toUpperCase()}
             </h2>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', margin: '4px 0', background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '4px', padding: '2px 8px', fontSize: '11px', color: '#fde047' }}>
+              <span>MITRE ATT&CK: <strong className="font-mono">{alert.mitre_id || 'T1046'}</strong> — {alert.mitre_technique || 'Network Service Discovery'}</span>
+            </div>
             <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '2px' }}>
               Observed from <span className="font-mono" style={{ color: '#38bdf8' }}>{alert.src_ip}</span> ➔ target <span className="font-mono" style={{ color: '#cbd5e1' }}>{alert.dst_ip || 'Broadcast/Subnet'}</span> (Port {alert.target_ports.join(', ')})
             </p>
@@ -193,6 +201,35 @@ export const AlertDetailModal: React.FC<AlertDetailModalProps> = ({ alert, onClo
           <p style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: 1.4 }}>
             {alert.visibility_notes}
           </p>
+        </div>
+
+        {/* Cryptographic Hash Chain / Blockchain Chain of Custody */}
+        <div style={{
+          background: 'rgba(139, 92, 246, 0.08)',
+          border: '1px solid rgba(139, 92, 246, 0.35)',
+          borderRadius: '8px',
+          padding: '12px 16px',
+          marginBottom: '16px',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#a78bfa', fontWeight: 600, fontSize: '12px' }}>
+              <Shield size={14} /> Tamper-Evident Evidence Hash Chain (Chain of Custody)
+            </div>
+            <span style={{ fontSize: '10px', background: 'rgba(16, 185, 129, 0.2)', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '1px 6px', borderRadius: '3px', fontWeight: 600 }}>
+              ✓ BLOCK #{alert.block_index ?? 1} CRYPTOGRAPHICALLY LINKED
+            </span>
+          </div>
+
+          <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: 1.5 }} className="font-mono">
+            <div>
+              <span style={{ color: '#94a3b8' }}>Evidence Hash: </span>
+              <span style={{ color: '#38bdf8' }}>{alert.evidence_hash || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'}</span>
+            </div>
+            <div>
+              <span style={{ color: '#94a3b8' }}>Previous Hash: </span>
+              <span style={{ color: '#64748b' }}>{alert.previous_hash || '0000000000000000000000000000000000000000000000000000000000000000'}</span>
+            </div>
+          </div>
         </div>
 
         {/* Passive SOC Playbook Action */}

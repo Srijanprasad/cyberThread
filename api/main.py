@@ -101,6 +101,28 @@ def get_evaluation_metrics():
     return {"status": "Evaluation report not generated yet"}
 
 
+@app.get("/api/ledger")
+def get_ledger_blocks(limit: int = 30):
+    """Returns append-only tamper-evident blockchain evidence ledger."""
+    return pipeline_manager.ledger.get_recent_blocks(limit=limit)
+
+
+@app.get("/api/ledger/verify")
+def verify_ledger():
+    """Validates cryptographic hash chain integrity."""
+    return pipeline_manager.ledger.verify_chain_integrity()
+
+
+@app.get("/api/ablation")
+def get_ablation_benchmark():
+    """Returns empirical one-way ablation study results."""
+    report_path = "models/ablation_report.json"
+    if os.path.exists(report_path):
+        with open(report_path, "r") as f:
+            return json.load(f)
+    return {"status": "Ablation report not generated yet"}
+
+
 @app.post("/api/traffic/simulate")
 async def trigger_simulation(
     scenario: str = Query("port_scan", description="Scenario: port_scan, syn_flood, udp_flood, slowloris, dns_tunneling, c2_beaconing, benign, all"),

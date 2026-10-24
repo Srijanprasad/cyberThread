@@ -138,6 +138,11 @@ class ThreatAlert(BaseModel):
     visibility_notes: str
     recommended_action: str
     detection_layer: str = "Multi-Window Ensemble"  # Rule, Classifier, Anomaly, Fusion
+    mitre_id: str = "T1046"
+    mitre_technique: str = "Network Service Discovery"
+    evidence_hash: Optional[str] = None
+    previous_hash: Optional[str] = None
+    block_index: Optional[int] = None
 
 
 class HostProfile(BaseModel):

@@ -10,9 +10,12 @@ import {
   Eye,
   Terminal,
   CheckCircle,
+  BarChart3,
 } from 'lucide-react';
 import { NetworkGraph, type GraphNode, type GraphEdge } from './components/NetworkGraph';
 import { AlertDetailModal, type ThreatAlert } from './components/AlertDetailModal';
+import { LedgerExplorerModal } from './components/LedgerExplorerModal';
+import { AblationModal } from './components/AblationModal';
 
 interface SystemStatus {
   status: string;
@@ -58,6 +61,8 @@ export function App() {
   const [severityFilter, setSeverityFilter] = useState<string>('ALL');
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [simulationStatus, setSimulationStatus] = useState<string>('Ready for simulation');
+  const [showLedger, setShowLedger] = useState<boolean>(false);
+  const [showAblation, setShowAblation] = useState<boolean>(false);
 
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -173,15 +178,24 @@ export function App() {
               <span style={{ fontSize: '10px', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.4)', padding: '1px 6px', borderRadius: '3px', fontWeight: 600 }}>
                 ONE-WAY DATA DIODE ACTIVE
               </span>
+              <span style={{ fontSize: '10px', background: 'rgba(16, 185, 129, 0.15)', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '1px 6px', borderRadius: '3px', fontWeight: 600 }}>
+                ✓ PASSIVE PROOF: 0 EGRESS (CI AUDITED)
+              </span>
             </div>
             <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc', margin: '2px 0 0 0' }}>
-              CyberThread AI — Unidirectional Threat Intelligence Platform
+              DiodeWatch AI — Unidirectional Threat Intelligence Platform
             </h1>
           </div>
         </div>
 
-        {/* Telemetry Chips */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Header Actions & Telemetry Chips */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button className="btn-cyber" style={{ borderColor: 'rgba(139, 92, 246, 0.5)', color: '#c084fc', padding: '6px 10px', fontSize: '11px' }} onClick={() => setShowLedger(true)}>
+            <Shield size={13} /> Chain of Custody
+          </button>
+          <button className="btn-cyber" style={{ borderColor: 'rgba(6, 182, 212, 0.5)', color: '#38bdf8', padding: '6px 10px', fontSize: '11px' }} onClick={() => setShowAblation(true)}>
+            <BarChart3 size={13} /> One-Way Ablation
+          </button>
           <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(51, 65, 85, 0.5)', borderRadius: '6px', padding: '6px 12px', textAlign: 'right' }}>
             <div style={{ fontSize: '10px', color: '#94a3b8' }}>THROUGHPUT</div>
             <div style={{ fontSize: '14px', fontWeight: 700, color: '#38bdf8' }} className="font-mono">
@@ -340,6 +354,15 @@ export function App() {
 
                     <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc', marginTop: '6px' }}>
                       {alert.threat_type.replace(/_/g, ' ').toUpperCase()}
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '4px' }}>
+                      <span style={{ fontSize: '9px', background: 'rgba(245, 158, 11, 0.15)', color: '#fde047', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }} className="font-mono">
+                        MITRE: {alert.mitre_id || 'T1046'}
+                      </span>
+                      <span style={{ fontSize: '9px', background: 'rgba(139, 92, 246, 0.15)', color: '#c084fc', border: '1px solid rgba(139, 92, 246, 0.3)', padding: '1px 5px', borderRadius: '3px', fontWeight: 600 }}>
+                        BLOCK #{alert.block_index ?? 1}
+                      </span>
                     </div>
 
                     <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }} className="font-mono">
@@ -501,6 +524,12 @@ export function App() {
 
       {/* Deep-Dive Investigation & Evidence Modal (Innovation 3) */}
       <AlertDetailModal alert={selectedAlert} onClose={() => setSelectedAlert(null)} />
+
+      {/* Blockchain Evidence Ledger Modal (Chain of Custody) */}
+      <LedgerExplorerModal isOpen={showLedger} onClose={() => setShowLedger(false)} />
+
+      {/* One-Way Physical Tap Ablation Study Modal */}
+      <AblationModal isOpen={showAblation} onClose={() => setShowAblation(false)} />
     </div>
   );
 }

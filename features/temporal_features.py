@@ -51,11 +51,8 @@ class MultiWindowTracker:
             self.beacon_pairs[(pkt.src_ip, pkt.dst_ip)].append(t)
 
     def record_flow(self, flow: FlowRecord):
-        """Records aggregated flow event."""
-        t = flow.last_time
-        self.host_events[flow.src_ip].append(
-            (t, flow.dst_ip, flow.dst_port, flow.protocol, flow.packet_count, flow.byte_count, flow.syn_count > 0)
-        )
+        """Records aggregated flow event (no-op for raw host_events to prevent double counting)."""
+        pass
 
     def get_multi_window_features(self, src_ip: str, current_time: float) -> Dict[str, float]:
         """

@@ -29,6 +29,7 @@ from detection.anomaly_detector import AnomalyDetector
 from detection.temporal_fusion import ThreatDetectionEnsemble
 from detection.host_graph import HostRelationshipGraph
 from explainability.evidence_builder import EvidenceBuilder
+from explainability.hash_chain import HashChainedLedger
 
 
 class PipelineManager:
@@ -46,6 +47,7 @@ class PipelineManager:
         )
         self.graph = HostRelationshipGraph(time_window_sec=600.0)
         self.evidence_builder = EvidenceBuilder()
+        self.ledger = HashChainedLedger()
 
         # Telemetry & History
         self.alerts: deque[ThreatAlert] = deque(maxlen=200)
@@ -69,6 +71,7 @@ class PipelineManager:
         self.total_packets_processed = 0
         self.total_alerts_emitted = 0
         self.latency_samples.clear()
+        self.ledger = HashChainedLedger()
 
     async def connect_client(self, websocket: WebSocket):
         """Registers a live WebSocket client."""
@@ -166,14 +169,40 @@ class PipelineManager:
                 )
 
                 if not is_duplicate:
+                    # Append alert to tamper-evident cryptographic hash chain
+                    evidence_summary = {
+                        "alert_id": alert.alert_id,
+                        "threat_type": alert.threat_type.value,
+                        "top_features": [
+                            {e.feature_name: str(e.observed_value), "baseline": str(e.baseline_value), "attribution": e.attribution_weight}
+                            for e in alert.evidence_trail
+                        ],
+                        "visibility_quality": alert.visibility_quality,
+                    }
+                    block = self.ledger.record_alert(
+                        alert_id=alert.alert_id,
+                        threat_label=alert.threat_type.value,
+                        mitre_technique=f"{alert.mitre_id}: {alert.mitre_technique}",
+                        src_ip=alert.src_ip,
+                        dst_ip=alert.dst_ip,
+                        calibrated_confidence=alert.calibrated_confidence,
+                        risk_score=alert.risk_score,
+                        evidence_dict=evidence_summary,
+                    )
+                    alert.evidence_hash = block.evidence_payload_hash
+                    alert.previous_hash = block.previous_hash
+                    alert.block_index = block.block_index
+
                     self.alerts.appendleft(alert)
                     self.total_alerts_emitted += 1
                     # Update graph node with risk
                     self.graph.update_from_flow(flow, is_suspicious=True, risk_score=alert.risk_score)
                 else:
                     self.graph.update_from_flow(flow, is_suspicious=False)
+                    alert = None
             else:
                 self.graph.update_from_flow(flow, is_suspicious=False)
+                alert = None
 
         latency_ms = (time.perf_counter() - t0) * 1000.0
         self.latency_samples.append(latency_ms)

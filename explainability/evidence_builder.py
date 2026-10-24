@@ -46,6 +46,16 @@ class EvidenceBuilder:
         ThreatCategory.ANOMALY_UNKNOWN: "PASSIVE SOC ADVISORY: Zero-day behavioral anomaly. Capture full packet metadata and review host relationship graph for abnormal fan-out.",
     }
 
+    MITRE_MAPPING = {
+        ThreatCategory.PORT_SCAN: ("T1046", "Network Service Discovery"),
+        ThreatCategory.SYN_FLOOD: ("T1498.001", "Direct Network Flood"),
+        ThreatCategory.UDP_FLOOD: ("T1498.002", "UDP Flood Reflection"),
+        ThreatCategory.SLOWLORIS: ("T1499.002", "Application Exhaustion: Slowloris"),
+        ThreatCategory.DNS_TUNNELING: ("T1572", "Protocol Tunneling: DNS Exfiltration"),
+        ThreatCategory.C2_BEACONING: ("T1071.001", "Application Layer Protocol: Web Protocols"),
+        ThreatCategory.ANOMALY_UNKNOWN: ("T1059", "Novel Behavioral Outlier"),
+    }
+
     def build_evidence_trail(
         self,
         category: ThreatCategory,
@@ -179,6 +189,10 @@ class EvidenceBuilder:
             category, "Review egress telemetry and correlate with perimeter logs."
         )
 
+        mitre_id, mitre_tech = self.MITRE_MAPPING.get(
+            category, ("T1000", "Heuristic Egress Anomaly")
+        )
+
         return ThreatAlert(
             alert_id=f"ALT-{uuid.uuid4().hex[:8].upper()}",
             timestamp=flow.last_time or time.time(),
@@ -196,4 +210,6 @@ class EvidenceBuilder:
             visibility_notes=detection_result.get("visibility_notes", "Passive unidirectional observation."),
             recommended_action=recommended_action,
             detection_layer=detection_result.get("detection_layer", "Ensemble"),
+            mitre_id=mitre_id,
+            mitre_technique=mitre_tech,
         )

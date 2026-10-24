@@ -21,7 +21,7 @@ class RuleDetectionEngine:
         """
         # 1. Aggressive or Distributed Port Scan
         # Checks short and medium unique destination ports
-        if temporal_stats.get("short_unique_ports", 0) >= 12 or temporal_stats.get("med_unique_ports", 0) >= 20:
+        if temporal_stats.get("short_unique_ports", 0) >= 5 or temporal_stats.get("med_unique_ports", 0) >= 8:
             ports_count = int(max(temporal_stats.get("short_unique_ports", 0), temporal_stats.get("med_unique_ports", 0)))
             return (
                 ThreatCategory.PORT_SCAN,
@@ -31,9 +31,9 @@ class RuleDetectionEngine:
             )
 
         # 2. Volumetric SYN Flood
-        # High SYN count or burst of SYN packets from same host in short window
+        # High SYN count targeting single/few ports
         short_syn = temporal_stats.get("short_syn_pkts", 0)
-        if (flow.protocol == "TCP" and flow.syn_count >= 15) or short_syn >= 20:
+        if ((flow.protocol == "TCP" and flow.syn_count >= 15) or short_syn >= 20) and temporal_stats.get("short_unique_ports", 0) <= 3:
             return (
                 ThreatCategory.SYN_FLOOD,
                 0.96,
