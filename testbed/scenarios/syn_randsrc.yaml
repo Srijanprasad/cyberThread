@@ -1,0 +1,17 @@
+name: syn_randsrc
+description: High-rate SYN flood with randomized spoofed source IPs
+seed: 101
+duration: 60.0
+benign_profile:
+  http_rate: 10.0
+  dns_rate: 5.0
+attacks:
+  - id: syn-rand-01
+    type: syn_flood
+    start_offset: 10.0
+    duration: 35.0
+    attacker_ip: random
+    target_ip: 10.77.2.10
+    target_port: 80
+    rate_pps: 4000
+    source_mode: random_spoofed

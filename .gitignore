@@ -18,3 +18,7 @@ dashboard/node_modules/
 # Data files (PCAPs can be large)
 data/raw_pcaps/*.pcap
 !data/raw_pcaps/.gitkeep
+captures/
+*.pcap
+*.parquet
+*.zip

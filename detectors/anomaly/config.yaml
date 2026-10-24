@@ -1,0 +1,7 @@
+name: anomaly
+threat_type: unclassified_anomaly
+version: 1.0.0
+thresholds:
+  anomaly_score_threshold: -0.20
+  max_confidence_cap: 0.75
+severity: MEDIUM

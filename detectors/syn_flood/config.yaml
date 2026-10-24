@@ -1,0 +1,16 @@
+name: syn_flood
+threat_type: syn_flood
+version: 1.0.0
+window_size_sec: 1.0
+topics:
+  input: events.flow
+  output: alerts.raw
+thresholds:
+  min_syn_count: 50
+  min_syn_ratio: 0.85
+  min_pps: 100.0
+  entropy_threshold: 0.60
+weights:
+  rule_weight: 0.4
+  ml_weight: 0.6
+severity: HIGH

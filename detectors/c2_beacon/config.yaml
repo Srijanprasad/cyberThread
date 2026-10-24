@@ -1,0 +1,8 @@
+name: c2_beacon
+threat_type: c2_beacon
+version: 1.0.0
+thresholds:
+  min_events: 5
+  max_iat_cv: 0.25
+  min_autocorr: 0.70
+severity: HIGH

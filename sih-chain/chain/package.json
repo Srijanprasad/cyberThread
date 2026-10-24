@@ -1,0 +1,16 @@
+{
+  "name": "sihchain-contracts",
+  "version": "1.0.0",
+  "description": "EvidenceAnchor and ModelRegistry contracts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@openzeppelin/contracts": "5.0.2",
+    "solc": "0.8.26"
+  }
+}

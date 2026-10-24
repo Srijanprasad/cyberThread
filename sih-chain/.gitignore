@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+deploy/secrets/dev-keys.env
+deploy/besu/config/
+deploy/besu/networkFiles/
+deploy/besu/.env
+*.egg-info/
+wal.sqlite
+addresses.json

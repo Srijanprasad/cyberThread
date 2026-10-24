@@ -1,0 +1,20 @@
+[project]
+name = "sihchain"
+version = "0.1.0"
+description = "Tamper-evident anchoring of IDS alerts, evidence and model provenance (SIH 2026 PS 26145)"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = ["web3>=7", "eth-utils", "rfc8785", "fastapi", "uvicorn"]
+
+[project.optional-dependencies]
+test = ["pytest", "eth-tester[py-evm]", "httpx"]
+
+[project.scripts]
+sihchain = "sihchain.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["anchor"]
+
+[tool.pytest.ini_options]
+pythonpath = ["anchor"]
+testpaths = ["tests"]

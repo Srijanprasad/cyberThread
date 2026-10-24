@@ -1,0 +1,50 @@
+services:
+  # Forward-Only Tap Router: Joins client-net and server-net with IP forwarding.
+  # Passive tcpdump captures ONLY client -> server packets. Egress back to client is dropped/unmonitored.
+  router-tap:
+    image: alpine:latest
+    container_name: diodewatch-router-tap
+    cap_add:
+      - NET_ADMIN
+    command: >
+      sh -c "sysctl -w net.ipv4.ip_forward=1 &&
+             sysctl -w net.ipv4.conf.all.rp_filter=0 &&
+             sysctl -w net.ipv4.conf.default.rp_filter=0 &&
+             apk add --no-cache tcpdump iptables &&
+             tcpdump -i any -n 'src net 10.77.1.0/24 and dst net 10.77.2.0/24' -w /captures/tap.pcap"
+    volumes:
+      - ./captures:/captures
+    networks:
+      client-net:
+        ipv4_address: 10.77.1.254
+      server-net:
+        ipv4_address: 10.77.2.254
+
+  # Target Victims (isolated in server-net)
+  victim-web:
+    image: nginx:alpine
+    container_name: diodewatch-victim-web
+    networks:
+      server-net:
+        ipv4_address: 10.77.2.10
+
+  victim-dns:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: diodewatch-victim-dns
+    networks:
+      server-net:
+        ipv4_address: 10.77.2.53
+
+networks:
+  client-net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.77.1.0/24
+  server-net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.77.2.0/24

@@ -1,0 +1,9 @@
+name: dga
+threat_type: dga
+version: 1.0.0
+thresholds:
+  min_length: 12
+  min_entropy: 3.20
+  max_vowel_ratio: 0.25
+  min_consonant_run: 5
+severity: MEDIUM

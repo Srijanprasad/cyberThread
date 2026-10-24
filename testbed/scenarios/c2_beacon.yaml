@@ -1,0 +1,17 @@
+name: c2_beacon
+description: Periodic C2 check-in heartbeats with 15s interval and 10% jitter
+seed: 505
+duration: 90.0
+benign_profile:
+  http_rate: 10.0
+  dns_rate: 5.0
+attacks:
+  - id: beacon-01
+    type: c2_beacon
+    start_offset: 10.0
+    duration: 70.0
+    attacker_ip: 10.77.1.44
+    target_ip: 10.77.2.99
+    target_port: 8443
+    interval: 15.0
+    jitter: 0.10

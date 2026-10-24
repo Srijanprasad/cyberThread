@@ -1,0 +1,9 @@
+name: udp_flood
+threat_type: udp_flood
+version: 1.0.0
+window_size_sec: 1.0
+thresholds:
+  min_pps: 150.0
+  min_udp_ratio: 0.80
+  min_byte_rate: 50000.0
+severity: HIGH

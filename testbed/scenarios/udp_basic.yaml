@@ -1,0 +1,17 @@
+name: udp_basic
+description: High-rate UDP flood with randomized payloads to DNS service port
+seed: 202
+duration: 60.0
+benign_profile:
+  http_rate: 10.0
+  dns_rate: 5.0
+attacks:
+  - id: udp-flood-01
+    type: udp_flood
+    start_offset: 20.0
+    duration: 25.0
+    attacker_ip: 10.77.1.150
+    target_ip: 10.77.2.53
+    target_port: 53
+    rate_pps: 3000
+    payload_size: 512

@@ -1,0 +1,9 @@
+name: benign_30min
+description: Clean baseline scenario with legitimate HTTP browsing, DNS queries, and background UDP
+seed: 707
+duration: 1800.0
+benign_profile:
+  http_rate: 25.0
+  dns_rate: 15.0
+  udp_rate: 5.0
+attacks: []

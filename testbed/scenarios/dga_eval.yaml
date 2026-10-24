@@ -1,0 +1,16 @@
+name: dga_eval
+description: Multi-family DGA queries (dictionary, hash-date, LCG, hex-string) evaluated against static Tranco benign corpus
+seed: 606
+duration: 60.0
+benign_profile:
+  http_rate: 10.0
+  dns_rate: 10.0
+attacks:
+  - id: dga-01
+    type: dga
+    start_offset: 10.0
+    duration: 40.0
+    attacker_ip: 10.77.1.180
+    target_ip: 10.77.2.53
+    families: ["dict_dga", "hash_date_dga", "lcg_dga", "hex_dga"]
+    rate_qps: 15.0

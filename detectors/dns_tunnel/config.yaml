@@ -1,0 +1,9 @@
+name: dns_tunnel
+threat_type: dns_tunnel
+version: 1.0.0
+window_size_sec: 60.0
+thresholds:
+  min_entropy: 3.00
+  min_mean_label_len: 20.0
+  min_txt_ratio: 0.30
+severity: HIGH

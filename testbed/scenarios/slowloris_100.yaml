@@ -1,0 +1,17 @@
+name: slowloris_100
+description: 100 concurrent incomplete HTTP GET streams with 15s header intervals
+seed: 303
+duration: 90.0
+benign_profile:
+  http_rate: 15.0
+  dns_rate: 5.0
+attacks:
+  - id: slowloris-01
+    type: slowloris
+    start_offset: 15.0
+    duration: 60.0
+    attacker_ip: 10.77.1.80
+    target_ip: 10.77.2.10
+    target_port: 80
+    concurrency: 100
+    header_interval: 15.0

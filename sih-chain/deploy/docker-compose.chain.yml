@@ -1,0 +1,79 @@
+# Blockchain layer: 4 QBFT validators + anchor service. UNTESTED in the build environment (needs Docker).
+# Both networks are internal: no route out of the enclave, no published ports.
+# Run scripts/gen-network.sh first, then:
+#   docker compose -f deploy/docker-compose.chain.yml --env-file deploy/besu/.env up -d
+#   docker compose -f deploy/docker-compose.chain.yml --profile deploy run --rm deployer
+name: sihchain
+
+x-besu: &besu
+  image: hyperledger/besu:24.12.2   # pin by digest in production
+  restart: unless-stopped
+  networks: [chain-net]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+
+x-besu-cmd: &besu-cmd >-
+  --genesis-file=/config/genesis.json
+  --node-private-key-file=/config/node/key
+  --data-path=/data
+  --min-gas-price=0
+  --rpc-http-enabled --rpc-http-host=0.0.0.0 --rpc-http-port=8545
+  --rpc-http-api=ETH,NET,QBFT,WEB3
+  --host-allowlist=*
+  --p2p-port=30303
+
+services:
+  besu-1:
+    <<: *besu
+    command: *besu-cmd --p2p-host=besu-1
+    volumes: [./besu/config/genesis.json:/config/genesis.json:ro, ./besu/config/node1:/config/node:ro, besu1:/data]
+  besu-2:
+    <<: *besu
+    command: *besu-cmd --p2p-host=besu-2 --bootnodes=${BOOTNODE_ENODE}
+    volumes: [./besu/config/genesis.json:/config/genesis.json:ro, ./besu/config/node2:/config/node:ro, besu2:/data]
+    depends_on: [besu-1]
+  besu-3:
+    <<: *besu
+    command: *besu-cmd --p2p-host=besu-3 --bootnodes=${BOOTNODE_ENODE}
+    volumes: [./besu/config/genesis.json:/config/genesis.json:ro, ./besu/config/node3:/config/node:ro, besu3:/data]
+    depends_on: [besu-1]
+  besu-4:
+    <<: *besu
+    command: *besu-cmd --p2p-host=besu-4 --bootnodes=${BOOTNODE_ENODE}
+    volumes: [./besu/config/genesis.json:/config/genesis.json:ro, ./besu/config/node4:/config/node:ro, besu4:/data]
+    depends_on: [besu-1]
+
+  anchor:
+    build: { context: .., dockerfile: deploy/Dockerfile.anchor }
+    restart: unless-stopped
+    networks: [chain-net, analytics-net]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    environment:
+      SIHCHAIN_RPC: http://besu-1:8545
+      SIHCHAIN_ADDRESSES: /state/addresses.json
+      SIHCHAIN_WAL: /state/wal.sqlite
+      SIHCHAIN_EVIDENCE: /state/evidence
+    # dev only: use an HSM/TPM-backed signer in production
+    env_file: [./secrets/dev-keys.env]
+    command: ["run", "/alerts/alerts.jsonl", "--follow"]
+    volumes: [anchor-state:/state, alerts:/alerts:ro]
+    depends_on: [besu-1]
+
+  deployer:
+    profiles: [deploy]
+    build: { context: .., dockerfile: deploy/Dockerfile.anchor }
+    networks: [chain-net]
+    environment:
+      SIHCHAIN_RPC: http://besu-1:8545
+      SIHCHAIN_ADDRESSES: /state/addresses.json
+    env_file: [./secrets/dev-keys.env]
+    command: ["deploy", "--threshold", "2"]
+    volumes: [anchor-state:/state]
+
+networks:
+  chain-net: { internal: true }
+  analytics-net: { internal: true }
+
+volumes: { besu1: {}, besu2: {}, besu3: {}, besu4: {}, anchor-state: {}, alerts: {} }

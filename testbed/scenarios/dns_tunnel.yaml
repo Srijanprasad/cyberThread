@@ -1,0 +1,16 @@
+name: dns_tunnel
+description: DNS covert tunneling with Base64/Base32 encoded subdomains (iodine/dnscat2 style)
+seed: 404
+duration: 60.0
+benign_profile:
+  http_rate: 10.0
+  dns_rate: 8.0
+attacks:
+  - id: tunnel-01
+    type: dns_tunnel
+    start_offset: 10.0
+    duration: 40.0
+    attacker_ip: 10.77.1.66
+    target_ip: 10.77.2.53
+    parent_domain: tunnel.covert-data.in
+    rate_qps: 25.0

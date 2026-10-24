@@ -1,0 +1,10 @@
+name: slowloris
+threat_type: slowloris
+version: 1.0.0
+window_size_sec: 30.0
+thresholds:
+  min_concurrent_flows: 20
+  min_flow_age_sec: 25.0
+  max_mean_bytes: 800.0
+  min_iat_regularity_cv: 0.50
+severity: HIGH

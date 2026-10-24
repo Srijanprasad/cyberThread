@@ -1,0 +1,57 @@
+name: mixed_all
+description: Composite scenario featuring SYN flood, UDP flood, Slowloris, DNS tunneling, DGA queries, and C2 beaconing
+seed: 808
+duration: 120.0
+benign_profile:
+  http_rate: 20.0
+  dns_rate: 10.0
+attacks:
+  - id: syn-01
+    type: syn_flood
+    start_offset: 15.0
+    duration: 25.0
+    attacker_ip: 10.77.1.101
+    target_ip: 10.77.2.10
+    target_port: 80
+    rate_pps: 2000
+  - id: udp-01
+    type: udp_flood
+    start_offset: 45.0
+    duration: 20.0
+    attacker_ip: 10.77.1.102
+    target_ip: 10.77.2.53
+    target_port: 53
+    rate_pps: 2500
+  - id: slow-01
+    type: slowloris
+    start_offset: 20.0
+    duration: 50.0
+    attacker_ip: 10.77.1.103
+    target_ip: 10.77.2.10
+    target_port: 80
+    concurrency: 80
+  - id: tunnel-01
+    type: dns_tunnel
+    start_offset: 30.0
+    duration: 40.0
+    attacker_ip: 10.77.1.104
+    target_ip: 10.77.2.53
+    parent_domain: tunnel.covert.org
+    rate_qps: 20.0
+  - id: c2-01
+    type: c2_beacon
+    start_offset: 10.0
+    duration: 100.0
+    attacker_ip: 10.77.1.105
+    target_ip: 10.77.2.99
+    target_port: 8443
+    interval: 15.0
+    jitter: 0.1
+  - id: dga-01
+    type: dga
+    start_offset: 60.0
+    duration: 35.0
+    attacker_ip: 10.77.1.105
+    target_ip: 10.77.2.53
+    families: ["dict_dga", "hex_dga"]
+    rate_qps: 10.0

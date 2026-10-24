@@ -1,0 +1,50 @@
+{
+  "syn_flood": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pr_auc": 0.9982,
+    "detection_delay_sec": 1.0,
+    "fp_per_hour_benign": 0.0
+  },
+  "udp_flood": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pr_auc": 0.9975,
+    "detection_delay_sec": 1.0,
+    "fp_per_hour_benign": 0.0
+  },
+  "slowloris": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pr_auc": 0.994,
+    "detection_delay_sec": 4.5,
+    "fp_per_hour_benign": 0.0
+  },
+  "dns_tunnel": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pr_auc": 0.9991,
+    "detection_delay_sec": 1.0,
+    "fp_per_hour_benign": 0.0
+  },
+  "dga": {
+    "precision": 1.0,
+    "recall": 0.95,
+    "f1": 0.9744,
+    "pr_auc": 0.9965,
+    "held_out_family_recall": 0.95,
+    "fp_per_hour_benign": 0.0
+  },
+  "c2_beacon": {
+    "precision": 0.8065,
+    "recall": 1.0,
+    "f1": 0.8929,
+    "pr_auc": 0.995,
+    "detection_delay_sec": 15.0,
+    "fp_per_hour_benign": 0.0
+  }
+}
